@@ -1,11 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jobcards.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'your_secret_key'  # Required for flash messages
 db = SQLAlchemy(app)
+migrate = Migrate(app, db) 
 
 # Job Card Model
 class JobCard(db.Model):
@@ -190,8 +193,32 @@ def add_part():
 
     return render_template('add_part.html')
 
+# Route to update the quantities of parts
+@app.route('/update_part/<int:part_id>', methods=['POST'])
+def update_part(part_id):
+    part = Part.query.get_or_404(part_id)
 
+    # Get updated values from the form
+    quantity_sent = request.form.get('quantitySent')
+    quantity_available = request.form.get('quantityAvailable')
 
+    if quantity_sent is not None:
+        part.quantity_sent = int(quantity_sent)
+    if quantity_available is not None:
+        part.quantity_available = int(quantity_available)
+
+    db.session.commit()
+    flash('Part updated successfully!', 'success')
+    return redirect(url_for('materials'))
+
+# Route to delete a part
+@app.route('/delete_part/<int:part_id>', methods=['POST'])
+def delete_part(part_id):
+    part = Part.query.get_or_404(part_id)
+    db.session.delete(part)
+    db.session.commit()
+    flash('Part deleted successfully!', 'success')
+    return redirect(url_for('materials'))
 
 
 if __name__ == '__main__':

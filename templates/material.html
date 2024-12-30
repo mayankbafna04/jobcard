@@ -5,13 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Material Management</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Add a button or link to navigate to the add part page -->
-<a href="{{ url_for('add_part') }}">Add New Part</a>
 
+    <!-- Inline CSS for styling -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #444;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        td input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            table {
+                font-size: 14px;
+            }
+
+            td input[type="number"] {
+                width: 50px;
+            }
+
+            button {
+                padding: 5px 8px;
+                font-size: 12px;
+            }
+        }
+
+        .add-part {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .add-part a {
+            text-decoration: none;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .add-part a:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-
-    <!-- List of parts used in the job cards -->
     <h2>Parts Used in Job Cards</h2>
     <table>
         <thead>
@@ -24,17 +108,21 @@
         <tbody>
             {% for part in parts %}
                 <tr>
-                    <td>{{ part.name }}</td>
-                    <td>{{ part.quantity_sent }}</td>
-                    <td>{{ part.quantity_available }}</td>
+                    <form action="{{ url_for('update_part', part_id=part.id) }}" method="POST">
+                        <td>{{ part.name }}</td>
+                        <td><input type="number" name="quantitySent" value="{{ part.quantity_sent }}" min="0"></td>
+                        <td><input type="number" name="quantityAvailable" value="{{ part.quantity_available }}" min="0"></td>
+                        <td>
+                            <button type="submit">Update</button>
+                        </td>
+                    </form>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <script>
-        // Used parts are already passed in the template and can be used in JavaScript if necessary
-        let used_parts = {{ used_parts|tojson }};
-    </script>
+    <div class="add-part">
+        <a href="{{ url_for('add_part') }}">Add New Part</a>
+    </div>
 </body>
 </html>
