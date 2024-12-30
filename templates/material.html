@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Add a button or link to navigate to the add part page -->
+<a href="{{ url_for('add_part') }}">Add New Part</a>
+
+</head>
+<body>
+
+    <!-- List of parts used in the job cards -->
+    <h2>Parts Used in Job Cards</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Part Name</th>
+                <th>Quantity Sent</th>
+                <th>Quantity Available</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for part in parts %}
+                <tr>
+                    <td>{{ part.name }}</td>
+                    <td>{{ part.quantity_sent }}</td>
+                    <td>{{ part.quantity_available }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        // Used parts are already passed in the template and can be used in JavaScript if necessary
+        let used_parts = {{ used_parts|tojson }};
+    </script>
+</body>
+</html>

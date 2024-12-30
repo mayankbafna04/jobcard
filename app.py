@@ -25,8 +25,8 @@ class JobCard(db.Model):
 class Part(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    quantity_sent = db.Column(db.Integer, nullable=False)  # Pieces sent by admin
-    quantity_available = db.Column(db.Integer, nullable=False)  # Available pieces
+    quantity_sent = db.Column(db.Integer, nullable=False, default=0)  # Pieces sent by admin
+    quantity_available = db.Column(db.Integer, nullable=False, default=0)  # Available pieces
 
     def __repr__(self):
         return f'<Part {self.name}>'
@@ -50,7 +50,9 @@ def index():
         description = request.form['description']
         amount = request.form['amount']
         payment_mode = request.form['paymentMode']
-        parts_used = ', '.join(request.form.getlist('partsUsed'))  # Join parts into a string
+        
+        # Get the list of parts used (only those selected in the dropdown)
+        parts_used = request.form.getlist('partsUsed')  # Returns a list of selected parts
 
         # Check if job card number already exists in the database
         existing_job_card = JobCard.query.filter_by(job_card_number=job_card_number).first()
@@ -66,7 +68,7 @@ def index():
             description=description,
             amount=amount,
             payment_mode=payment_mode,
-            parts_used=parts_used
+            parts_used=', '.join(parts_used)  # Store selected parts as a comma-separated string
         )
 
         # Add the new job card to the database
@@ -74,7 +76,7 @@ def index():
         db.session.commit()
 
         # Deduct from available stock (pieces) for each part used
-        for part_name in parts_used.split(', '):
+        for part_name in parts_used:
             part = Part.query.filter_by(name=part_name).first()
             if part:
                 if part.quantity_available > 0:
@@ -91,12 +93,12 @@ def index():
 
     return render_template('index.html')
 
-
 # Route for the Admin Page (admin.html)
 @app.route('/admin')
 def admin():
     job_cards = JobCard.query.all()  # Get all job cards
-    return render_template('admin.html', job_cards=job_cards)
+    parts = Part.query.all()  # Get all parts
+    return render_template('admin.html', job_cards=job_cards, parts=parts)
 
 # Route to delete a job card
 @app.route('/delete/<int:job_card_id>')
@@ -126,26 +128,70 @@ def edit_job_card(job_card_id):
         return redirect(url_for('admin'))
 
     return render_template('edit.html', job_card=job_card)
-
-# Route to manage parts (parts.html)
-@app.route('/parts', methods=['GET', 'POST'])
-def manage_parts():
+# Route for Material Management (material.html)
+@app.route('/materials', methods=['GET', 'POST'])
+def materials():
     if request.method == 'POST':
-        # Update parts quantities (pieces sent by admin)
+        # Handle the form submission and update available quantities for parts
         for part in Part.query.all():
-            quantity_sent = request.form.get(f'quantity_sent_{part.id}')
-            if quantity_sent:
-                # Update the quantity_sent and sync quantity_available with quantity_sent
-                part.quantity_sent = int(quantity_sent)
-                part.quantity_available = int(quantity_sent)  # Set available stock equal to sent pieces
-                db.session.commit()
+            available_quantity = request.form.get(f'available_{part.id}')
+            if available_quantity is not None:
+                part.quantity_available = int(available_quantity)
+        db.session.commit()
+        flash('Material quantities updated successfully!', 'success')
+        return redirect(url_for('materials'))
 
-        flash('Parts updated successfully!', 'success')  # Flash success message
-        return redirect(url_for('manage_parts'))
-    
-    # Get all parts from database
+    # Get all parts
     parts = Part.query.all()
-    return render_template('parts.html', parts=parts)
+
+    # Create a set to store parts that are used in job cards
+    used_parts = set()
+
+    # Check which parts have been used in job cards
+    job_cards = JobCard.query.all()
+    for job_card in job_cards:
+        used_parts.update(job_card.parts_used.split(', '))  # Add parts used in this job card
+
+    # Only show the used parts in the template
+    used_parts = list(used_parts)  # Convert the set to a list
+
+    # Filter the parts to show only those that are used
+    parts_to_display = [part for part in parts if part.name in used_parts]
+
+    return render_template('material.html', parts=parts_to_display, used_parts=used_parts)
+
+# Route for adding new parts
+@app.route('/add_part', methods=['GET', 'POST'])
+def add_part():
+    if request.method == 'POST':
+        # Get the part details from the form
+        part_name = request.form['partName']
+        quantity_sent = request.form['quantitySent']
+        quantity_available = request.form['quantityAvailable']
+
+        # Check if the part already exists in the database
+        existing_part = Part.query.filter_by(name=part_name).first()
+        if existing_part:
+            flash('This part already exists!', 'error')
+            return redirect(url_for('add_part'))
+
+        # Create a new Part entry in the database
+        new_part = Part(
+            name=part_name,
+            quantity_sent=int(quantity_sent),
+            quantity_available=int(quantity_available)
+        )
+
+        # Add the new part to the database
+        db.session.add(new_part)
+        db.session.commit()
+        flash('New part added successfully!', 'success')
+        return redirect(url_for('materials'))  # Redirect to the materials page after adding
+
+    return render_template('add_part.html')
+
+
+
 
 
 if __name__ == '__main__':
