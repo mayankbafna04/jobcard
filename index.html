@@ -1,1 +1,96 @@
-templates/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Card Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Add jQuery UI for Datepicker -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- Optional: Add library for better select dropdown -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+</head>
+<body>
+    <h1>Job Card Portal</h1>
+
+    <p><a href="{{ url_for('admin') }}">Go to Admin Panel</a></p>
+
+    <!-- Display Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="flash {{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <!-- Other Form Fields -->
+        <label for="date">Date:</label><br>
+        <input type="text" id="date" name="date" required><br><br>
+
+        <label for="customerName">Customer Name:</label><br>
+        <input type="text" id="customerName" name="customerName" required><br><br>
+
+        <label for="jobCardNumber">Job Card Number:</label><br>
+        <input type="text" id="jobCardNumber" name="jobCardNumber" required><br><br>
+
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="description" required></textarea><br><br>
+
+        <label for="amount">Amount (in Rupees):</label><br>
+        <input type="number" id="amount" name="amount" required><br><br>
+
+        <label for="paymentMode">Mode of Payment:</label><br>
+        <select id="paymentMode" name="paymentMode" required>
+            <option value="cash">Cash</option>
+            <option value="upi">UPI</option>
+            <option value="card">Card</option>
+        </select><br><br>
+
+        <!-- New parts selection with multiple options -->
+        <label for="partsUsed">Parts Used (Select Multiple):</label><br>
+        <select id="partsUsed" name="partsUsed" multiple required>
+            <option value="part1">Part 1</option>
+            <option value="part2">Part 2</option>
+            <option value="part3">Part 3</option>
+            <option value="part4">Part 4</option>
+            <option value="part5">Part 5</option>
+            <option value="part6">Part 6</option>
+            <option value="part7">Part 7</option>
+            <option value="part8">Part 8</option>
+            <option value="part9">Part 9</option>
+            <option value="part10">Part 10</option>
+        </select><br><br>
+        
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Optional: Include Select2 library to enhance the select dropdown with search functionality -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        // Initialize Select2 for parts selection
+        $(document).ready(function() {
+            $('#partsUsed').select2({
+                placeholder: 'Select parts used',
+                allowClear: true
+            });
+
+            // Initialize jQuery UI Datepicker for the date input field
+            $("#date").datepicker({
+                dateFormat: 'dd-mm-yy', // Format: dd-mm-yyyy
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true
+            });
+        });
+    </script>
+</body>
+</html>
