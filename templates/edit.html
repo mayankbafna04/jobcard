@@ -1,47 +1,126 @@
+{% block content %}
+<div class="card">
+    <h2 class="text-xl font-semibold mb-4">Edit Job Card</h2>
+    
+    <form method="POST" class="form-container">
+        <div class="grid grid-cols-2 gap-4">
+            <div class="form-group">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" id="date" name="date" class="form-control" value="{{ job_card.date }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="customerName" class="form-label">Customer Name</label>
+                <input type="text" id="customerName" name="customerName" class="form-control" value="{{ job_card.customer_name }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="jobCardNumber" class="form-label">Job Card Number</label>
+                <input type="text" id="jobCardNumber" name="jobCardNumber" class="form-control" value="{{ job_card.job_card_number }}" required>
+            </div>
+
+            <div class="form-group col-span-2">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description" name="description" class="form-control" required>{{ job_card.description }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="amount" class="form-label">Amount (₹)</label>
+                <input type="number" id="amount" name="amount" class="form-control" value="{{ job_card.amount }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="paymentMode" class="form-label">Payment Mode</label>
+                <select id="paymentMode" name="paymentMode" class="form-control">
+                    <option value="cash" {% if job_card.payment_mode == 'cash' %}selected{% endif %}>Cash</option>
+                    <option value="upi" {% if job_card.payment_mode == 'upi' %}selected{% endif %}>UPI</option>
+                    <option value="card" {% if job_card.payment_mode == 'card' %}selected{% endif %}>Card</option>
+                </select>
+            </div>
+
+            <div class="form-group col-span-2">
+                <label for="partsUsed" class="form-label">Parts Used</label>
+                <select id="partsUsed" name="partsUsed" class="form-control" multiple size="10">
+                    <!-- Add parts options here, pre-select parts used -->
+                    <option value="Part1" {% if 'Part1' in job_card.parts_used %}selected{% endif %}>Part 1</option>
+                    <option value="Part2" {% if 'Part2' in job_card.parts_used %}selected{% endif %}>Part 2</option>
+                    <!-- Continue for all parts -->
+                </select>
+            </div>
+
+            <div class="col-span-2 mt-6">
+                <button type="submit" class="btn btn-primary w-full">Update Job Card</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Job Card</title>
-    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Edit Job Card</h1>
-        <form method="POST">
-            <label for="date">Date:</label>
-            <input type="date" id="date" name="date" value="{{ job_card.date }}" required><br><br>
+    <div class="container mx-auto p-4">
+        <div class="card">
+            <h2 class="text-xl font-semibold mb-4">Edit Job Card</h2>
+            
+            <form method="POST" class="form-container">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" id="date" name="date" class="form-control" value="{{ job_card.date }}" required>
+                    </div>
 
-            <label for="customerName">Customer Name:</label>
-            <input type="text" id="customerName" name="customerName" value="{{ job_card.customer_name }}" required><br><br>
+                    <div class="form-group">
+                        <label for="customerName" class="form-label">Customer Name</label>
+                        <input type="text" id="customerName" name="customerName" class="form-control" value="{{ job_card.customer_name }}" required>
+                    </div>
 
-            <label for="jobCardNumber">Job Card Number:</label>
-            <input type="text" id="jobCardNumber" name="jobCardNumber" value="{{ job_card.job_card_number }}" required><br><br>
+                    <div class="form-group">
+                        <label for="jobCardNumber" class="form-label">Job Card Number</label>
+                        <input type="text" id="jobCardNumber" name="jobCardNumber" class="form-control" value="{{ job_card.job_card_number }}" required>
+                    </div>
 
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" required>{{ job_card.description }}</textarea><br><br>
+                    <div class="form-group col-span-2">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea id="description" name="description" class="form-control" required>{{ job_card.description }}</textarea>
+                    </div>
 
-            <label for="amount">Amount (in Rupees):</label>
-            <input type="number" id="amount" name="amount" value="{{ job_card.amount }}" required><br><br>
+                    <div class="form-group">
+                        <label for="amount" class="form-label">Amount (₹)</label>
+                        <input type="number" id="amount" name="amount" class="form-control" value="{{ job_card.amount }}" required>
+                    </div>
 
-            <label for="paymentMode">Mode of Payment:</label>
-            <select id="paymentMode" name="paymentMode">
-                <option value="cash" {% if job_card.payment_mode == 'cash' %}selected{% endif %}>Cash</option>
-                <option value="upi" {% if job_card.payment_mode == 'upi' %}selected{% endif %}>UPI</option>
-                <option value="card" {% if job_card.payment_mode == 'card' %}selected{% endif %}>Card</option>
-            </select><br><br>
+                    <div class="form-group">
+                        <label for="paymentMode" class="form-label">Payment Mode</label>
+                        <select id="paymentMode" name="paymentMode" class="form-control">
+                            <option value="cash" {% if job_card.payment_mode == 'cash' %}selected{% endif %}>Cash</option>
+                            <option value="upi" {% if job_card.payment_mode == 'upi' %}selected{% endif %}>UPI</option>
+                            <option value="card" {% if job_card.payment_mode == 'card' %}selected{% endif %}>Card</option>
+                        </select>
+                    </div>
 
-            <label for="partsUsed">Parts Used:</label><br>
-            <select id="partsUsed" name="partsUsed" multiple size="10">
-                <!-- Add parts options here, pre-select parts used -->
-                <option value="Part1" {% if 'Part1' in job_card.parts_used %}selected{% endif %}>Part 1</option>
-                <option value="Part2" {% if 'Part2' in job_card.parts_used %}selected{% endif %}>Part 2</option>
-                <!-- Continue for all parts -->
-            </select><br><br>
+                    <div class="form-group col-span-2">
+                        <label for="partsUsed" class="form-label">Parts Used</label>
+                        <select id="partsUsed" name="partsUsed" class="form-control" multiple size="10">
+                            <!-- Add parts options here, pre-select parts used -->
+                            <option value="Part1" {% if 'Part1' in job_card.parts_used %}selected{% endif %}>Part 1</option>
+                            <option value="Part2" {% if 'Part2' in job_card.parts_used %}selected{% endif %}>Part 2</option>
+                            <!-- Continue for all parts -->
+                        </select>
+                    </div>
 
-            <button type="submit">Update</button>
-        </form>
+                    <div class="col-span-2 mt-6">
+                        <button type="submit" class="btn btn-primary w-full">Update Job Card</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>

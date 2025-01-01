@@ -3,89 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Card Portal</title>
+    <title>Job Card Management</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
     <!-- Add jQuery UI for Datepicker -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-
-    <!-- Optional: Add library for better select dropdown -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
 </head>
-<body>
-    <h1>Job Card Portal</h1>
+<body class="min-h-screen bg-gray-100">
+<div class="card">
+    <h2 class="text-xl font-semibold mb-4">Create New Job Card</h2>
+    
+    <form method="POST" class="form-container">
+        <div class="grid grid-cols-3 gap-4">
+            <!-- Date, Customer Name, and Phone No -->
+            <div class="form-group">
+                <label for="date" class="form-label">Date</label>
+                <input type="text" id="date" name="date" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="customerName" class="form-label">Customer Name</label>
+                <input type="text" id="customerName" name="customerName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="phoneNo" class="form-label">Phone No</label>
+                <input type="text" id="phoneNo" name="phoneNo" class="form-control" required>
+            </div>
 
-    <p><a href="{{ url_for('admin') }}">Go to Admin Panel</a></p>
+            <!-- Model Name, Vehicle No, Job Card Number -->
+            <div class="form-group">
+                <label for="modelName" class="form-label">Model Name</label>
+                <input type="text" id="modelName" name="modelName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="vehicleNo" class="form-label">Vehicle No</label>
+                <input type="text" id="vehicleNo" name="vehicleNo" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="jobCardNumber" class="form-label">Job Card Number</label>
+                <input type="text" id="jobCardNumber" name="jobCardNumber" class="form-control" required>
+            </div>
+        </div>
 
-    <!-- Display Flash messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul class="flashes">
-          {% for category, message in messages %}
-            <li class="flash {{ category }}">{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+        <!-- Description -->
+        <div class="form-group mt-4">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control" required></textarea>
+        </div>
 
-    <form method="POST">
-        <!-- Other Form Fields -->
-        <label for="date">Date:</label><br>
-        <input type="text" id="date" name="date" required><br><br>
+        <!-- Charger Present -->
+        <div class="form-group mt-4">
+            <label for="chargerPresent" class="form-label">Charger Present</label>
+            <select id="chargerPresent" name="chargerPresent" class="form-control" required>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
 
-        <label for="customerName">Customer Name:</label><br>
-        <input type="text" id="customerName" name="customerName" required><br><br>
+        <!-- Mechanic Name, Amount, Mode of Payment -->
+        <div class="grid grid-cols-3 gap-4 mt-4">
+            <div class="form-group">
+                <label for="mechanicName" class="form-label">Mechanic Name</label>
+                <input type="text" id="mechanicName" name="mechanicName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="amount" class="form-label">Amount (₹)</label>
+                <input type="number" id="amount" name="amount" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="paymentMode" class="form-label">Payment Mode</label>
+                <select id="paymentMode" name="paymentMode" class="form-control" required>
+                    <option value="cash">Cash</option>
+                    <option value="upi">UPI</option>
+                    <option value="card">Card</option>
+                </select>
+            </div>
+        </div>
 
-        <label for="jobCardNumber">Job Card Number:</label><br>
-        <input type="text" id="jobCardNumber" name="jobCardNumber" required><br><br>
+        <!-- Parts Used -->
+        <div class="form-group mt-4">
+            <label for="partsUsed" class="form-label">Parts Used (Select Multiple):</label>
+            <select id="partsUsed" name="partsUsed" class="form-control" multiple required>
+                <option value="part1">Part 1</option>
+                <option value="part2">Part 2</option>
+                <option value="part3">Part 3</option>
+                <option value="part4">Part 4</option>
+                <option value="part5">Part 5</option>
+                <option value="part6">Part 6</option>
+                <option value="part7">Part 7</option>
+                <option value="part8">Part 8</option>
+                <option value="part9">Part 9</option>
+                <option value="part10">Part 10</option>
+            </select>
+        </div>
 
-        <label for="description">Description:</label><br>
-        <textarea id="description" name="description" required></textarea><br><br>
-
-        <label for="amount">Amount (in Rupees):</label><br>
-        <input type="number" id="amount" name="amount" required><br><br>
-
-        <label for="paymentMode">Mode of Payment:</label><br>
-        <select id="paymentMode" name="paymentMode" required>
-            <option value="cash">Cash</option>
-            <option value="upi">UPI</option>
-            <option value="card">Card</option>
-        </select><br><br>
-
-        <!-- New parts selection with multiple options -->
-        <label for="partsUsed">Parts Used (Select Multiple):</label><br>
-        <select id="partsUsed" name="partsUsed" multiple required>
-            <option value="part1">Part 1</option>
-            <option value="part2">Part 2</option>
-            <option value="part3">Part 3</option>
-            <option value="part4">Part 4</option>
-            <option value="part5">Part 5</option>
-            <option value="part6">Part 6</option>
-            <option value="part7">Part 7</option>
-            <option value="part8">Part 8</option>
-            <option value="part9">Part 9</option>
-            <option value="part10">Part 10</option>
-        </select><br><br>
-        
-
-        <button type="submit">Submit</button>
+        <div class="mt-6">
+            <button type="submit" class="btn btn-primary w-full">Create Job Card</button>
+        </div>
     </form>
-
-    <!-- Optional: Include Select2 library to enhance the select dropdown with search functionality -->
+</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
-        // Initialize Select2 for parts selection
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#partsUsed').select2({
                 placeholder: 'Select parts used',
                 allowClear: true
             });
 
-            // Initialize jQuery UI Datepicker for the date input field
             $("#date").datepicker({
-                dateFormat: 'dd-mm-yy', // Format: dd-mm-yyyy
+                dateFormat: 'dd-mm-yy',
                 changeMonth: true,
                 changeYear: true,
                 showButtonPanel: true

@@ -6,6 +6,7 @@
     <title>Admin Panel - Job Card Portal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <p><a href="{{ url_for('materials') }}">Manage Materials</a></p>
+    <p><a href="{{ url_for('inward_admin') }}">Go to Inward Admin</a></p>
 
 
     <script>
@@ -50,35 +51,55 @@
 </head>
 <body>
     <h1>Admin Panel - Job Cards</h1>
+    
+    <div class="mb-3">
+        <form action="/download_admin_data" method="get" class="form-inline">
+            <div class="form-group mr-2">
+                <label for="month" class="mr-2">Select Month:</label>
+                <input type="month" id="month" name="month" class="form-control" min="2023-01" max="{{ datetime.now().strftime('%Y-%m') }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Download Data</button>
+        </form>
+    </div>
 
     <p><a href="{{ url_for('index') }}">Go to Job Card Form</a></p>
 
-    <table id="jobCardTable">
+    <table id="jobCardTable" class="w-full border-collapse">
         <thead>
-            <tr>
-                <th onclick="sortTable(0)">Date</th>
-                <th onclick="sortTable(1)">Customer Name</th>
-                <th onclick="sortTable(2)">Job Card Number</th>
-                <th onclick="sortTable(3)">Description</th>
-                <th onclick="sortTable(4)">Amount</th>
-                <th onclick="sortTable(5)">Payment Mode</th>
-                <th onclick="sortTable(6)">Parts Used</th>
-                <th>Actions</th>
+            <tr class="bg-gray-200">
+                <th class="p-3 border text-left cursor-pointer" onclick="sortTable(0)">Date</th>
+                <th class="p-3 border text-left cursor-pointer" onclick="sortTable(1)">Customer Name</th>
+                <th class="p-3 border text-left cursor-pointer" onclick="sortTable(2)">Phone No</th>
+                <th class="p-3 border text-left cursor-pointer" onclick="sortTable(3)">Model Name</th>
+                <th class="p-3 border text-left cursor-pointer" onclick="sortTable(4)">Vehicle No</th>
+                <th class="p-3 border text-left cursor-pointer" onclick="sortTable(5)">Job Card Number</th>
+                <th class="p-3 border text-left cursor-pointer" onclick="sortTable(6)">Description</th>
+                <th class="p-3 border text-left cursor-pointer" onclick="sortTable(7)">Charger Present</th>
+                <th class="p-3 border text-left cursor-pointer" onclick="sortTable(8)">Mechanic Name</th>
+                <th class="p-3 border text-left cursor-pointer" onclick="sortTable(9)">Amount</th>
+                <th class="p-3 border text-left cursor-pointer" onclick="sortTable(10)">Payment Mode</th>
+                <th class="p-3 border text-left cursor-pointer" onclick="sortTable(11)">Parts Used</th>
+                <th class="p-3 border text-left">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for job_card in job_cards %}
-            <tr>
-                <td>{{ job_card.date }}</td>
-                <td>{{ job_card.customer_name }}</td>
-                <td>{{ job_card.job_card_number }}</td>
-                <td>{{ job_card.description }}</td>
-                <td>{{ job_card.amount }}</td>
-                <td>{{ job_card.payment_mode }}</td>
-                <td>{{ job_card.parts_used }}</td>
-                <td>
-                    <a href="{{ url_for('edit_job_card', job_card_id=job_card.id) }}">Edit</a> |
-                    <a href="{{ url_for('delete_job_card', job_card_id=job_card.id) }}" onclick="return confirm('Are you sure?')">Delete</a>
+            <tr class="hover:bg-gray-50 {% if loop.index % 2 == 0 %}bg-gray-100{% endif %}">
+                <td class="p-3 border">{{ job_card.date }}</td>
+                <td class="p-3 border">{{ job_card.customer_name }}</td>
+                <td class="p-3 border">{{ job_card.phone_no }}</td>
+                <td class="p-3 border">{{ job_card.model_name }}</td>
+                <td class="p-3 border">{{ job_card.vehicle_no }}</td>
+                <td class="p-3 border">{{ job_card.job_card_number }}</td>
+                <td class="p-3 border">{{ job_card.description }}</td>
+                <td class="p-3 border">{{ job_card.charger_present }}</td>
+                <td class="p-3 border">{{ job_card.mechanic_name }}</td>
+                <td class="p-3 border">{{ job_card.amount }}</td>
+                <td class="p-3 border">{{ job_card.payment_mode }}</td>
+                <td class="p-3 border">{{ job_card.parts_used }}</td>
+                <td class="p-3 border">
+                    <a href="{{ url_for('edit_job_card', job_card_id=job_card.id) }}" class="text-blue-500 hover:text-blue-700">Edit</a> |
+                    <a href="{{ url_for('delete_job_card', job_card_id=job_card.id) }}" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure?')">Delete</a>
                 </td>
             </tr>
             {% endfor %}

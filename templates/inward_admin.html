@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inward Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Inward Data</h2>
+    <p><a href="{{ url_for('admin') }}">Back to Admin</a></p>
+    
+    <!-- Download Button -->
+    <form method="get" action="{{ url_for('download_inward_data') }}">
+        <label for="month">Select Month:</label>
+        <input type="month" id="month" name="month">
+        <button type="submit">Download Excel</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Model Name</th>
+                <th>Phone Number</th>
+                <th>Vehicle Number</th>
+                <th>Jobcard Number</th>
+                <th>Customer's Voice</th>
+                <th>Charger Present</th>
+                <th>Charger Number</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inward in inwards %}
+            <tr>
+                <td>{{ inward.customer_name }}</td>
+                <td>{{ inward.model_name }}</td>
+                <td>{{ inward.phone_number }}</td>
+                <td>{{ inward.vehicle_number }}</td>
+                <td>{{ inward.jobcard_number }}</td>
+                <td>{{ inward.customers_voice }}</td>
+                <td>{{ inward.charger_present }}</td>
+                <td>{{ inward.charger_number }}</td>
+                <td>{{ inward.date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
