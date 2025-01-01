@@ -10,7 +10,7 @@
 <body class="bg-gray-100">
     <div class="container mx-auto p-4">
         <div class="card">
-            <h2 class="text-xl font-semibold mb-4">Inward Form</h2>
+            <h2 class="text-xl font-semibold mb-4"> Inward Form</h2>
             
             <form action="{{ url_for('submit_inward') }}" method="POST" class="form-container">
                 <div class="grid grid-cols-2 gap-4">
@@ -54,10 +54,12 @@
                     <div class="form-group">
                         <label for="charger_present" class="form-label">Charger Present</label>
                         <select id="charger_present" name="charger_present" class="form-control" required>
+                            <option value="" disabled selected>Select an option</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </select>
                     </div>
+                    
 
                     <div class="form-group charger-number" style="display: none;">
                         <label for="charger_number" class="form-label">Charger Number</label>
@@ -67,10 +69,28 @@
 
                 <div class="mt-6">
                     <button type="submit" class="btn btn-primary w-full">Submit Inward</button>
+                    <div id="successMessage" class="success-message">
+                        Inward form submitted successfully!
+                    </div>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Simulate form submission
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'block';
+                // Reset form after 2 seconds
+                setTimeout(() => {
+                    this.reset();
+                    document.getElementById('successMessage').style.display = 'none';
+                }, 2000);
+            }, 500);
+        });
+    </script>
 
     <script>
         document.getElementById('charger_present').addEventListener('change', function() {
@@ -78,6 +98,25 @@
             chargerNumberField.style.display = this.value === 'yes' ? 'block' : 'none';
             if (this.value !== 'yes') {
                 document.getElementById('charger_number').value = '';
+            }
+        });
+
+        document.getElementById('phone_number').addEventListener('input', async function() {
+            const phoneNumber = this.value;
+            if (phoneNumber.length >= 10) {
+                try {
+                    const response = await fetch(`/api/customer-details?phone=${phoneNumber}`);
+                    const data = await response.json();
+                    
+                    if (data) {
+                        document.getElementById('customer_name').value = data.customer_name || '';
+                        document.getElementById('model_name').value = data.model_name || '';
+                        document.getElementById('vehicle_number').value = data.vehicle_number || '';
+                        document.getElementById('jobcard_number').value = data.jobcard_number || '';
+                    }
+                } catch (error) {
+                    console.error('Error fetching customer details:', error);
+                }
             }
         });
     </script>

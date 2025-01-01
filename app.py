@@ -1,4 +1,5 @@
 
+
 from flask import Flask, render_template, request, redirect, send_file, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -91,6 +92,9 @@ def get_customer_details(phone_number):
 @app.route('/job_card', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
+        # Log form data for debugging
+        logger.info(f"Received form data: {dict(request.form)}")
+        
         # Handle form data and job card submission
         # Convert date to yyyy-mm-dd format
         input_date = request.form['date']
@@ -150,8 +154,16 @@ def index():
             payment_mode=payment_mode,
             parts_used=', '.join(parts_used)  # Store parts used as a comma-separated string
         )
+        # Add logging for debugging
+        logger.info(f"Adding new job card: {new_job_card}")
         db.session.add(new_job_card)
-        db.session.commit()
+        try:
+            db.session.commit()
+            logger.info("Job card successfully committed to database")
+        except Exception as e:
+            logger.error(f"Error committing job card: {str(e)}")
+            flash('Error saving job card to database', 'error')
+            return redirect(url_for('index'))
 
         # Deduct parts from available stock
         for part_name in parts_used:

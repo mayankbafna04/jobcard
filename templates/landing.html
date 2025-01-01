@@ -4,22 +4,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>Moti Motors Redhills Branch</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="min-h-screen bg-gray-100">
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="text-center">
-            <h1 class="text-4xl font-bold mb-8">Welcome</h1>
-            <div class="space-x-4">
-                <a href="{{ url_for('inward_index') }}" class="btn btn-primary px-8 py-3 text-lg">
-                    Inward Management
-                </a>
-                <a href="{{ url_for('index') }}" class="btn btn-secondary px-8 py-3 text-lg">
-                    Job Card Management
-                </a>
+<body class="min-h-screen bg-gray-100 flex flex-col">
+    <header class="shadow-lg py-6" style="background-color: #77a0bc;">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800">
+                Moti Motors Redhills Branch
+            </h1>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center">
+        <div class="container mx-auto px-4">
+            <div class="text-center space-y-8">
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                    <a href="{{ url_for('inward_index') }}" 
+                       class="btn btn-primary px-12 py-6 text-xl md:text-2xl transform transition-all hover:scale-105">
+                        Inward Management
+                    </a>
+                    <a href="{{ url_for('index') }}" 
+                       class="btn btn-secondary px-12 py-6 text-xl md:text-2xl transform transition-all hover:scale-105">
+                        Job Card Management
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
+
+    <footer class="shadow-lg py-4 mt-8" style="background-color: #77a0bc;">
+        <div class="container mx-auto px-4">
+            <p class="text-center text-gray-600">
+                &copy; 2025 Moti Motors. All rights reserved.
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
