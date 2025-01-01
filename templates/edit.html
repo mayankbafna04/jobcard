@@ -1,61 +1,3 @@
-{% block content %}
-<div class="card">
-    <h2 class="text-xl font-semibold mb-4">Edit Job Card</h2>
-    
-    <form method="POST" class="form-container">
-        <div class="grid grid-cols-2 gap-4">
-            <div class="form-group">
-                <label for="date" class="form-label">Date</label>
-                <input type="date" id="date" name="date" class="form-control" value="{{ job_card.date }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="customerName" class="form-label">Customer Name</label>
-                <input type="text" id="customerName" name="customerName" class="form-control" value="{{ job_card.customer_name }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="jobCardNumber" class="form-label">Job Card Number</label>
-                <input type="text" id="jobCardNumber" name="jobCardNumber" class="form-control" value="{{ job_card.job_card_number }}" required>
-            </div>
-
-            <div class="form-group col-span-2">
-                <label for="description" class="form-label">Description</label>
-                <textarea id="description" name="description" class="form-control" required>{{ job_card.description }}</textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="amount" class="form-label">Amount (₹)</label>
-                <input type="number" id="amount" name="amount" class="form-control" value="{{ job_card.amount }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="paymentMode" class="form-label">Payment Mode</label>
-                <select id="paymentMode" name="paymentMode" class="form-control">
-                    <option value="cash" {% if job_card.payment_mode == 'cash' %}selected{% endif %}>Cash</option>
-                    <option value="upi" {% if job_card.payment_mode == 'upi' %}selected{% endif %}>UPI</option>
-                    <option value="card" {% if job_card.payment_mode == 'card' %}selected{% endif %}>Card</option>
-                </select>
-            </div>
-
-            <div class="form-group col-span-2">
-                <label for="partsUsed" class="form-label">Parts Used</label>
-                <select id="partsUsed" name="partsUsed" class="form-control" multiple size="10">
-                    <!-- Add parts options here, pre-select parts used -->
-                    <option value="Part1" {% if 'Part1' in job_card.parts_used %}selected{% endif %}>Part 1</option>
-                    <option value="Part2" {% if 'Part2' in job_card.parts_used %}selected{% endif %}>Part 2</option>
-                    <!-- Continue for all parts -->
-                </select>
-            </div>
-
-            <div class="col-span-2 mt-6">
-                <button type="submit" class="btn btn-primary w-full">Update Job Card</button>
-            </div>
-        </div>
-    </form>
-</div>
-{% endblock %}
-=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,64 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Job Card</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
 </head>
-<body>
-    <div class="container mx-auto p-4">
-        <div class="card">
-            <h2 class="text-xl font-semibold mb-4">Edit Job Card</h2>
-            
-            <form method="POST" class="form-container">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="form-group">
-                        <label for="date" class="form-label">Date</label>
-                        <input type="date" id="date" name="date" class="form-control" value="{{ job_card.date }}" required>
-                    </div>
+<body class="min-h-screen bg-gray-100">
+<div class="card">
+    <h2 class="text-xl font-semibold mb-4">Edit Job Card</h2>
+    
+    <form method="POST" class="form-container">
+        <div class="grid grid-cols-3 gap-4">
+            <!-- Date, Customer Name, and Phone No -->
+            <div class="form-group">
+                <label for="date" class="form-label">Date</label>
+                <input type="text" id="date" name="date" class="form-control" value="{{ job_card.date }}" required>
+            </div>
+            <div class="form-group">
+                <label for="customerName" class="form-label">Customer Name</label>
+                <input type="text" id="customerName" name="customerName" class="form-control" value="{{ job_card.customer_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="phoneNo" class="form-label">Phone No</label>
+                <input type="text" id="phoneNo" name="phoneNo" class="form-control" value="{{ job_card.phone_no }}" required>
+            </div>
 
-                    <div class="form-group">
-                        <label for="customerName" class="form-label">Customer Name</label>
-                        <input type="text" id="customerName" name="customerName" class="form-control" value="{{ job_card.customer_name }}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="jobCardNumber" class="form-label">Job Card Number</label>
-                        <input type="text" id="jobCardNumber" name="jobCardNumber" class="form-control" value="{{ job_card.job_card_number }}" required>
-                    </div>
-
-                    <div class="form-group col-span-2">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea id="description" name="description" class="form-control" required>{{ job_card.description }}</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="amount" class="form-label">Amount (₹)</label>
-                        <input type="number" id="amount" name="amount" class="form-control" value="{{ job_card.amount }}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="paymentMode" class="form-label">Payment Mode</label>
-                        <select id="paymentMode" name="paymentMode" class="form-control">
-                            <option value="cash" {% if job_card.payment_mode == 'cash' %}selected{% endif %}>Cash</option>
-                            <option value="upi" {% if job_card.payment_mode == 'upi' %}selected{% endif %}>UPI</option>
-                            <option value="card" {% if job_card.payment_mode == 'card' %}selected{% endif %}>Card</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-span-2">
-                        <label for="partsUsed" class="form-label">Parts Used</label>
-                        <select id="partsUsed" name="partsUsed" class="form-control" multiple size="10">
-                            <!-- Add parts options here, pre-select parts used -->
-                            <option value="Part1" {% if 'Part1' in job_card.parts_used %}selected{% endif %}>Part 1</option>
-                            <option value="Part2" {% if 'Part2' in job_card.parts_used %}selected{% endif %}>Part 2</option>
-                            <!-- Continue for all parts -->
-                        </select>
-                    </div>
-
-                    <div class="col-span-2 mt-6">
-                        <button type="submit" class="btn btn-primary w-full">Update Job Card</button>
-                    </div>
-                </div>
-            </form>
+            <!-- Model Name, Vehicle No, Job Card Number -->
+            <div class="form-group">
+                <label for="modelName" class="form-label">Model Name</label>
+                <input type="text" id="modelName" name="modelName" class="form-control" value="{{ job_card.model_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="vehicleNo" class="form-label">Vehicle No</label>
+                <input type="text" id="vehicleNo" name="vehicleNo" class="form-control" value="{{ job_card.vehicle_no }}" required>
+            </div>
+            <div class="form-group">
+                <label for="jobCardNumber" class="form-label">Job Card Number</label>
+                <input type="text" id="jobCardNumber" name="jobCardNumber" class="form-control" value="{{ job_card.job_card_number }}" required>
+            </div>
         </div>
-    </div>
+
+        <!-- Description -->
+        <div class="form-group mt-4">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control" required>{{ job_card.description }}</textarea>
+        </div>
+
+        <!-- Charger Present -->
+        <div class="form-group mt-4">
+            <label for="chargerPresent" class="form-label">Charger Present</label>
+            <select id="chargerPresent" name="chargerPresent" class="form-control" required>
+                <option value="yes" {% if job_card.charger_present == 'yes' %}selected{% endif %}>Yes</option>
+                <option value="no" {% if job_card.charger_present == 'no' %}selected{% endif %}>No</option>
+            </select>
+        </div>
+
+        <!-- Mechanic Name, Amount, Mode of Payment -->
+        <div class="grid grid-cols-3 gap-4 mt-4">
+            <div class="form-group">
+                <label for="mechanicName" class="form-label">Mechanic Name</label>
+                <input type="text" id="mechanicName" name="mechanicName" class="form-control" value="{{ job_card.mechanic_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="amount" class="form-label">Amount (₹)</label>
+                <input type="number" id="amount" name="amount" class="form-control" value="{{ job_card.amount }}" required>
+            </div>
+            <div class="form-group">
+                <label for="paymentMode" class="form-label">Payment Mode</label>
+                <select id="paymentMode" name="paymentMode" class="form-control" required>
+                    <option value="cash" {% if job_card.payment_mode == 'cash' %}selected{% endif %}>Cash</option>
+                    <option value="upi" {% if job_card.payment_mode == 'upi' %}selected{% endif %}>UPI</option>
+                    <option value="card" {% if job_card.payment_mode == 'card' %}selected{% endif %}>Card</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Parts Used -->
+        <div class="form-group mt-4">
+            <label for="partsUsed" class="form-label">Parts Used (Select Multiple):</label>
+            <select id="partsUsed" name="partsUsed" class="form-control" multiple required>
+                {% for part in ['part1', 'part2', 'part3', 'part4', 'part5', 'part6', 'part7', 'part8', 'part9', 'part10'] %}
+                    <option value="{{ part }}" {% if part in job_card.parts_used.split(', ') %}selected{% endif %}>{{ part }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mt-6">
+            <button type="submit" class="btn btn-primary w-full">Update Job Card</button>
+        </div>
+    </form>
+</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#partsUsed').select2({
+                placeholder: 'Select parts used',
+                allowClear: true
+            });
+
+            $("#date").datepicker({
+                dateFormat: 'dd-mm-yy',
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect, send_file, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -37,8 +38,13 @@ class JobCard(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(20), nullable=False)
     customer_name = db.Column(db.String(100), nullable=False)
+    phone_no = db.Column(db.String(15), nullable=False)
+    model_name = db.Column(db.String(100), nullable=False)
+    vehicle_no = db.Column(db.String(20), nullable=False)
     job_card_number = db.Column(db.String(50), nullable=False, unique=True)
     description = db.Column(db.String(200), nullable=False)
+    charger_present = db.Column(db.String(5), nullable=False)
+    mechanic_name = db.Column(db.String(100), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     payment_mode = db.Column(db.String(20), nullable=False)
     parts_used = db.Column(db.String(500), nullable=False)  # Comma-separated parts
@@ -133,8 +139,13 @@ def index():
         new_job_card = JobCard(
             date=date,
             customer_name=customer_name,
+            phone_no=request.form['phoneNo'],
+            model_name=request.form['modelName'],
+            vehicle_no=request.form['vehicleNo'],
             job_card_number=job_card_number,
             description=description,
+            charger_present=request.form['chargerPresent'],
+            mechanic_name=request.form['mechanicName'],
             amount=amount,
             payment_mode=payment_mode,
             parts_used=', '.join(parts_used)  # Store parts used as a comma-separated string
@@ -168,6 +179,7 @@ def index():
 def admin():
     job_cards = JobCard.query.all()  # Get all job cards
     parts = Part.query.all()  # Get all parts
+    return render_template('admin.html', job_cards=job_cards, parts=parts, datetime=datetime)
 
 # Route to delete a job card
 @app.route('/delete/<int:job_card_id>')
@@ -210,24 +222,9 @@ def materials():
         flash('Material quantities updated successfully!', 'success')
         return redirect(url_for('materials'))
 
-    # Get all parts
+    # Get all parts and show them in the materials page
     parts = Part.query.all()
-
-    # Create a set to store parts that are used in job cards
-    used_parts = set()
-
-    # Check which parts have been used in job cards
-    job_cards = JobCard.query.all()
-    for job_card in job_cards:
-        used_parts.update(job_card.parts_used.split(', '))  # Add parts used in this job card
-
-    # Only show the used parts in the template
-    used_parts = list(used_parts)  # Convert the set to a list
-
-    # Filter the parts to show only those that are used
-    parts_to_display = [part for part in parts if part.name in used_parts]
-
-    return render_template('material.html', parts=parts_to_display, used_parts=used_parts)
+    return render_template('material.html', parts=parts)
 
 # Route for adding new parts
 @app.route('/add_part', methods=['GET', 'POST'])
