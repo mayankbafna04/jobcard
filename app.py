@@ -362,6 +362,16 @@ def download_admin_data():
 def inward_index():
     return render_template('inward_index.html')
 
+# API endpoint to check jobcard number uniqueness
+@app.route('/api/check-jobcard')
+def check_jobcard():
+    jobcard_number = request.args.get('jobcard')
+    if not jobcard_number:
+        return {'exists': False}
+    
+    existing = Inward.query.filter_by(jobcard_number=jobcard_number).first()
+    return {'exists': existing is not None}
+
 # Route to handle inward form submission
 @app.route('/submit_inward', methods=['POST'])
 def submit_inward():
@@ -369,8 +379,20 @@ def submit_inward():
     customer_name = request.form['customer_name']
     model_name = request.form['model_name']
     phone_number = request.form['phone_number']
-    vehicle_number = request.form['vehicle_number']
     jobcard_number = request.form['jobcard_number']
+    
+    # Validate phone number length
+    if len(phone_number) != 10 or not phone_number.isdigit():
+        flash('Phone number must be exactly 10 digits', 'error')
+        return redirect(url_for('inward_index'))
+    
+    # Validate jobcard number uniqueness
+    existing_jobcard = Inward.query.filter_by(jobcard_number=jobcard_number).first()
+    if existing_jobcard:
+        flash('Jobcard number must be unique', 'error')
+        return redirect(url_for('inward_index'))
+    
+    vehicle_number = request.form['vehicle_number']
     customers_voice = request.form['customers_voice']
     charger_present = request.form['charger_present']
     charger_number = request.form.get('charger_number', '')

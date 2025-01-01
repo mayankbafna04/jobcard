@@ -247,17 +247,84 @@ textarea.form-control {
     animation: slideIn 0.8s ease-out;
 }
 
-/* Flash Messages */
+/* Enhanced Flash Messages */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
 .flash-message {
-    padding: 1rem;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
     margin-bottom: 1rem;
-    border-radius: 0.25rem;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    animation: slideInRight 0.5s ease-out;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.flash-message.hide {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+
+.flash-message .close {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0.25rem;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.flash-message .close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Flash Message Types */
+.flash-success {
+    background-color: #10b981;
+    color: white;
 }
 
 .flash-error {
-    background-color: #fee2e2;
-    color: #dc2626;
-    border: 1px solid #fca5a5;
+    background-color: #ef4444;
+    color: white;
+}
+
+.flash-warning {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.flash-info {
+    background-color: #3b82f6;
+    color: white;
 }
 
 /* Button Enhancements */

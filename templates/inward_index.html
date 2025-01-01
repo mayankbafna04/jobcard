@@ -26,7 +26,8 @@
 
                     <div class="form-group">
                         <label for="phone_number" class="form-label">Phone Number</label>
-                        <input type="text" id="phone_number" name="phone_number" class="form-control" required>
+                        <input type="text" id="phone_number" name="phone_number" class="form-control" pattern="\d{10}" title="" required>
+                        <div id="inward-phone-error" class="text-red-500 text-sm hidden"></div>
                     </div>
 
                     <div class="form-group">
@@ -37,6 +38,7 @@
                     <div class="form-group">
                         <label for="jobcard_number" class="form-label">Jobcard Number</label>
                         <input type="text" id="jobcard_number" name="jobcard_number" class="form-control" required>
+                        <div id="jobcard-error" class="text-red-500 text-sm hidden"></div>
                     </div>
 
                     <div class="form-group">
@@ -79,16 +81,13 @@
 
     <script>
         document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Simulate form submission
-            setTimeout(() => {
-                document.getElementById('successMessage').style.display = 'block';
-                // Reset form after 2 seconds
-                setTimeout(() => {
-                    this.reset();
-                    document.getElementById('successMessage').style.display = 'none';
-                }, 2000);
-            }, 500);
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            // Allow form submission to proceed
+            // The success message will be shown after page reload from the Flask route
         });
     </script>
 
@@ -101,8 +100,39 @@
             }
         });
 
+        // Jobcard number uniqueness check
+        document.getElementById('jobcard_number').addEventListener('blur', async function() {
+            const jobcardNumber = this.value;
+            if (jobcardNumber) {
+                try {
+                    const response = await fetch(`/api/check-jobcard?jobcard=${jobcardNumber}`);
+                    const data = await response.json();
+                    const errorDiv = document.getElementById('jobcard-error');
+                    if (data.exists) {
+                        errorDiv.classList.remove('hidden');
+                        this.setCustomValidity('Jobcard number must be unique');
+                    } else {
+                        errorDiv.classList.add('hidden');
+                        this.setCustomValidity('');
+                    }
+                } catch (error) {
+                    console.error('Error checking jobcard number:', error);
+                }
+            }
+        });
+
         document.getElementById('phone_number').addEventListener('input', async function() {
             const phoneNumber = this.value;
+            const errorDiv = document.getElementById('inward-phone-error');
+            
+            if (phoneNumber.length !== 10 || !/^\d+$/.test(phoneNumber)) {
+                errorDiv.classList.remove('hidden');
+                this.setCustomValidity('Phone number must be exactly 10 digits');
+                return; // Don't proceed with API call if invalid
+            } else {
+                errorDiv.classList.add('hidden');
+                this.setCustomValidity('');
+            }
             if (phoneNumber.length >= 10) {
                 try {
                     const response = await fetch(`/api/customer-details?phone=${phoneNumber}`);

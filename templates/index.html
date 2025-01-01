@@ -17,9 +17,10 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="flash-message flash-{{ category }}">
-                        {{ message }}
-                    </div>
+                <div class="flash-message flash-{{ category }}">
+                    <span>{{ message }}</span>
+                    <span class="close" onclick="this.parentElement.classList.add('hide')">&times;</span>
+                </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
@@ -140,6 +141,11 @@
                 changeYear: true,
                 showButtonPanel: true
             });
+
+            // Auto-hide flash messages after 2 seconds
+            setTimeout(function () {
+                $('.flash-message').fadeOut('slow');
+            }, 2000); // 2000ms = 2 seconds
         });
     </script>
 </body>
