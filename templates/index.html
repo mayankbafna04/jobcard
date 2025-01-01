@@ -4,122 +4,136 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Card Management</title>
+    
+    <!-- External Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Add jQuery UI for Datepicker -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
 </head>
+
 <body class="min-h-screen bg-gray-100">
-<div class="card">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="flash-message flash-{{ category }}">
-                    {{ message }}
+    <div class="card">
+        <!-- Flash Messages Section -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Main Form Section -->
+        <h2 class="text-xl font-semibold mb-4">Create New Job Card</h2>
+        
+        <form method="POST" class="form-container">
+            <!-- Customer Information Section -->
+            <div class="grid grid-cols-3 gap-4">
+                <div class="form-group">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="text" id="date" name="date" class="form-control" required>
                 </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    <h2 class="text-xl font-semibold mb-4">Create New Job Card</h2>
-    
-    <form method="POST" class="form-container">
-        <div class="grid grid-cols-3 gap-4">
-            <!-- Date, Customer Name, and Phone No -->
-            <div class="form-group">
-                <label for="date" class="form-label">Date</label>
-                <input type="text" id="date" name="date" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="customerName" class="form-label">Customer Name</label>
-                <input type="text" id="customerName" name="customerName" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="phoneNo" class="form-label">Phone No</label>
-                <input type="text" id="phoneNo" name="phoneNo" class="form-control" required>
+                <div class="form-group">
+                    <label for="customerName" class="form-label">Customer Name</label>
+                    <input type="text" id="customerName" name="customerName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNo" class="form-label">Phone No</label>
+                    <input type="text" id="phoneNo" name="phoneNo" class="form-control" required>
+                </div>
             </div>
 
-            <!-- Model Name, Vehicle No, Job Card Number -->
-            <div class="form-group">
-                <label for="modelName" class="form-label">Model Name</label>
-                <input type="text" id="modelName" name="modelName" class="form-control" required>
+            <!-- Vehicle Information Section -->
+            <div class="grid grid-cols-3 gap-4 mt-4">
+                <div class="form-group">
+                    <label for="modelName" class="form-label">Model Name</label>
+                    <input type="text" id="modelName" name="modelName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleNo" class="form-label">Vehicle No</label>
+                    <input type="text" id="vehicleNo" name="vehicleNo" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="jobCardNumber" class="form-label">Job Card Number</label>
+                    <input type="text" id="jobCardNumber" name="jobCardNumber" class="form-control" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="vehicleNo" class="form-label">Vehicle No</label>
-                <input type="text" id="vehicleNo" name="vehicleNo" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="jobCardNumber" class="form-label">Job Card Number</label>
-                <input type="text" id="jobCardNumber" name="jobCardNumber" class="form-control" required>
-            </div>
-        </div>
 
-        <!-- Description -->
-        <div class="form-group mt-4">
-            <label for="description" class="form-label">Description</label>
-            <textarea id="description" name="description" class="form-control" required></textarea>
-        </div>
-
-        <!-- Charger Present -->
-        <div class="form-group mt-4">
-            <label for="chargerPresent" class="form-label">Charger Present</label>
-            <select id="chargerPresent" name="chargerPresent" class="form-control" required>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-            </select>
-        </div>
-
-        <!-- Mechanic Name, Amount, Mode of Payment -->
-        <div class="grid grid-cols-3 gap-4 mt-4">
-            <div class="form-group">
-                <label for="mechanicName" class="form-label">Mechanic Name</label>
-                <input type="text" id="mechanicName" name="mechanicName" class="form-control" required>
+            <!-- Description Section -->
+            <div class="form-group mt-4">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description" name="description" class="form-control" required></textarea>
             </div>
-            <div class="form-group">
-                <label for="amount" class="form-label">Amount (₹)</label>
-                <input type="number" id="amount" name="amount" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="paymentMode" class="form-label">Payment Mode</label>
-                <select id="paymentMode" name="paymentMode" class="form-control" required>
-                    <option value="cash">Cash</option>
-                    <option value="upi">UPI</option>
-                    <option value="card">Card</option>
+
+            <!-- Charger Information Section -->
+            <div class="form-group mt-4">
+                <label for="chargerPresent" class="form-label">Charger Present</label>
+                <select id="chargerPresent" name="chargerPresent" class="form-control" required>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
                 </select>
             </div>
-        </div>
 
-        <!-- Parts Used -->
-        <div class="form-group mt-4">
-            <label for="partsUsed" class="form-label">Parts Used (Select Multiple):</label>
-            <select id="partsUsed" name="partsUsed" class="form-control" multiple required>
-                <option value="part1">Part 1</option>
-                <option value="part2">Part 2</option>
-                <option value="part3">Part 3</option>
-                <option value="part4">Part 4</option>
-                <option value="part5">Part 5</option>
-                <option value="part6">Part 6</option>
-                <option value="part7">Part 7</option>
-                <option value="part8">Part 8</option>
-                <option value="part9">Part 9</option>
-                <option value="part10">Part 10</option>
-            </select>
-        </div>
+            <!-- Payment Information Section -->
+            <div class="grid grid-cols-3 gap-4 mt-4">
+                <div class="form-group">
+                    <label for="mechanicName" class="form-label">Mechanic Name</label>
+                    <input type="text" id="mechanicName" name="mechanicName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount" class="form-label">Amount (₹)</label>
+                    <input type="number" id="amount" name="amount" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="paymentMode" class="form-label">Payment Mode</label>
+                    <select id="paymentMode" name="paymentMode" class="form-control" required>
+                        <option value="cash">Cash</option>
+                        <option value="upi">UPI</option>
+                        <option value="card">Card</option>
+                    </select>
+                </div>
+            </div>
 
-        <div class="mt-6">
-            <button type="submit" class="btn btn-primary w-full">Create Job Card</button>
-        </div>
-    </form>
-</div>
+            <!-- Parts Used Section -->
+            <div class="form-group mt-4">
+                <label for="partsUsed" class="form-label">Parts Used (Select Multiple):</label>
+                <select id="partsUsed" name="partsUsed" class="form-control" multiple required>
+                    <option value="part1">Part 1</option>
+                    <option value="part2">Part 2</option>
+                    <option value="part3">Part 3</option>
+                    <option value="part4">Part 4</option>
+                    <option value="part5">Part 5</option>
+                    <option value="part6">Part 6</option>
+                    <option value="part7">Part 7</option>
+                    <option value="part8">Part 8</option>
+                    <option value="part9">Part 9</option>
+                    <option value="part10">Part 10</option>
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-6">
+                <button type="submit" class="btn btn-primary w-full">Create Job Card</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- External Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <!-- Custom Scripts -->
     <script>
         $(document).ready(function () {
+            // Initialize Select2 for parts selection
             $('#partsUsed').select2({
                 placeholder: 'Select parts used',
                 allowClear: true
             });
 
+            // Initialize Datepicker
             $("#date").datepicker({
                 dateFormat: 'dd-mm-yy',
                 changeMonth: true,
