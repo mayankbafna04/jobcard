@@ -8,18 +8,23 @@
 </head>
 <body>
     <h2>Inward Data</h2>
-    <p><a href="{{ url_for('admin') }}">Back to Admin</a></p>
+    <div class="admin-nav mb-4">
+        <a href="{{ url_for('admin') }}" class="btn btn-secondary slide-in">Back to Admin</a>
+    </div>
     
-    <!-- Download Button -->
-    <form method="get" action="{{ url_for('download_inward_data') }}">
-        <label for="month">Select Month:</label>
-        <input type="month" id="month" name="month">
-        <button type="submit">Download Excel</button>
-    </form>
+    <div class="download-form mb-4">
+        <form method="get" action="{{ url_for('download_inward_data') }}" class="form-inline">
+            <div class="form-group mr-2">
+                <label for="month" class="mr-2">Select Month:</label>
+                <input type="month" id="month" name="month" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Download Excel</button>
+        </form>
+    </div>
 
-    <table>
+    <table class="w-full border-collapse">
         <thead>
-            <tr>
+            <tr class="bg-gray-200">
                 <th>Customer Name</th>
                 <th>Model Name</th>
                 <th>Phone Number</th>
@@ -33,7 +38,7 @@
         </thead>
         <tbody>
             {% for inward in inwards %}
-            <tr>
+            <tr class="hover:bg-gray-50 {% if loop.index % 2 == 0 %}bg-gray-100{% endif %}">
                 <td>{{ inward.customer_name }}</td>
                 <td>{{ inward.model_name }}</td>
                 <td>{{ inward.phone_number }}</td>

@@ -157,35 +157,48 @@ def index():
         # Add logging for debugging
         logger.info(f"Adding new job card: {new_job_card}")
         db.session.add(new_job_card)
+        
         try:
+            # Deduct parts from inventory
+            for part_name in parts_used:
+                part = Part.query.filter_by(name=part_name).first()
+                if not part:
+                    logger.error(f"Part not found: {part_name}")
+                    flash(f'Error: Part {part_name} not found in inventory', 'error')
+                    db.session.rollback()
+                    return redirect(url_for('index'))
+                
+                if part.quantity_available <= 0:
+                    logger.error(f"Insufficient quantity for part: {part_name}")
+                    flash(f'Error: Insufficient quantity for part {part_name}', 'error')
+                    db.session.rollback()
+                    return redirect(url_for('index'))
+                
+                part.quantity_available -= 1
+                logger.info(f"Deducted 1 from {part_name}. New quantity: {part.quantity_available}")
+            
+            # Commit both job card and part updates
             db.session.commit()
-            logger.info("Job card successfully committed to database")
+            logger.info("Job card and part updates successfully committed to database")
         except Exception as e:
-            logger.error(f"Error committing job card: {str(e)}")
-            flash('Error saving job card to database', 'error')
+            logger.error(f"Error committing changes: {str(e)}")
+            db.session.rollback()
+            flash('Error saving job card and updating inventory', 'error')
             return redirect(url_for('index'))
 
-        # Deduct parts from available stock
-        for part_name in parts_used:
-            part = Part.query.filter_by(name=part_name).first()
-            if part:
-                if part.quantity_available > 0:
-                    part.quantity_available -= 1  # Subtract one piece from stock
-                    db.session.commit()
-                    # Update the materials page immediately
-                    flash(f"Used 1 {part_name}. Remaining: {part.quantity_available}", 'info')
-                else:
-                    flash(f"Not enough stock for {part_name}.", 'warning')
-            else:
-                flash(f"Part {part_name} not found.", 'error')
 
         flash('Job Card successfully submitted!', 'success')
         return redirect(url_for('index'))  # Redirect to `index` after submitting the form
 
     # Render `index.html` if it's a GET request
-    return render_template('index.html')  # This will serve the `index.html` template
+    parts = Part.query.all()
+    return render_template('index.html', parts=parts)  # This will serve the `index.html` template
 
+import logging
 
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging
 # Route for the Admin Page (admin.html)
 @app.route('/admin')
 def admin():
