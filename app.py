@@ -480,6 +480,13 @@ def get_inward_data_by_month(month=None):
         for inward in inwards
     ]
 
+@app.route('/delete_inward/<int:inward_id>')
+def delete_inward(inward_id):
+    inward = Inward.query.get_or_404(inward_id)
+    db.session.delete(inward)
+    db.session.commit()
+    return redirect(url_for('inward_admin'))
+
 @app.route('/download_inward_data')
 def download_inward_data():
     month = request.args.get('month')  # Get the selected month

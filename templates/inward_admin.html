@@ -34,6 +34,7 @@
                 <th>Charger Present</th>
                 <th>Charger Number</th>
                 <th>Date</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -48,6 +49,9 @@
                 <td>{{ inward.charger_present }}</td>
                 <td>{{ inward.charger_number }}</td>
                 <td>{{ inward.date }}</td>
+                <td>
+                    <a href="{{ url_for('delete_inward', inward_id=inward.id) }}" class="btn btn-delete" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

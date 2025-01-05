@@ -84,7 +84,7 @@
         <div class="form-group mt-4">
             <label for="partsUsed" class="form-label">Parts Used (Select Multiple):</label>
             <select id="partsUsed" name="partsUsed" class="form-control" multiple required>
-                {% for part in ['part1', 'part2', 'part3', 'part4', 'part5', 'part6', 'part7', 'part8', 'part9', 'part10'] %}
+                {% for part in ['general_service', 'throttle', 'ampere_throttle', 'okaya_throttle', 'clamp', 'front_wheel_bearing', 'rear_wheel_bearing', 'motor_bearing', 'brake_lever_rh', 'brake_lever_lh', 'brake_shoe_front', 'brake_shoe_rear', 'brake_cable_front', 'brake_cable_rear', 'brake_disc_pad_rear', 'brake_disc_pad_front', 'front_wheel_brake_hub', 'battery_charging_socket', 'charging_socket', 'mudguard_inner_rear', 'switch_hi_low', 'switch_on_off', 'switch_horn', 'switch_indicator', 'switch_reverse', 'lock_set_reo', 'lock_set_zeal', 'lock_set_magnus', 'lock_set_okaya', 'mirror_rear_lh', 'mirror_rear_rh', 'mirror_set', 'ladies_footrest', 'junction_box', 'cone_set', 'tyre', 'head_light_assembly', 'indicator_assembly', 'tail_light_assembly', 'side_stand', 'side_stand_spring', 'center_stand', 'foot_board', 'bag_hook', 'fork_oil_seal', 'mcb_switch'] %}
                     <option value="{{ part }}" {% if part in job_card.parts_used.split(', ') %}selected{% endif %}>{{ part }}</option>
                 {% endfor %}
             </select>
